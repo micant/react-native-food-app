@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import yelp from '../api/yelp';
 import useResults from '../hooks/useResults';
 import ResultsList from '../components/ResultsList';
+import { SceneView } from 'react-navigation';
 
 const SearchScreen = () => {
     const [term, setTerm] = useState('');
     const [searchApi, results, errorMessage] = useResults();
     
     const filterResultsByPrice = (price) => {
-        // price === $ || $$ || $$$
         return results.filter(results => {
             return results.price === price;
         });
     };
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <SearchBar
                 term={term} 
                 onTermChange={setTerm} 
@@ -25,9 +25,11 @@ const SearchScreen = () => {
             />
             {errorMessage ? <Text>{errorMessage}</Text> : null}
             <Text>We have found {results.length} resutts</Text>
-            <ResultsList results={filterResultsByPrice('$')} title="Cost Effective" />
-            <ResultsList results={filterResultsByPrice('$$')} title="Bit Pricier" />
-            <ResultsList results={filterResultsByPrice('$$$')} title="Big Spender" />
+            <ScrollView>
+                <ResultsList results={filterResultsByPrice('$')} title="Cost Effective" />
+                <ResultsList results={filterResultsByPrice('$$')} title="Bit Pricier" />
+                <ResultsList results={filterResultsByPrice('$$$')} title="Big Spender" />
+            </ScrollView>
         </View>
     )
 }
